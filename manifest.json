@@ -22,7 +22,7 @@
    },
    "default_locale": "en",
    "description": "__MSG_extDescription__",
-   "homepage_url": "https://2captcha.com/",
+   "homepage_url": "https://captchas.io/",
    "host_permissions": [ "\u003Call_urls>" ],
    "icons": {
       "128": "assets/images/icon_128.png",
