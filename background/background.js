@@ -78,7 +78,7 @@ async function popup_login(msg) {
     info.valute = info.valute.toUpperCase();
 
     if (info.valute === "RUB") {
-        API.service = "rucaptcha.com";
+        API.service = "api.captchas.io";
     }
 
     Config.set({

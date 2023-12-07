@@ -13,7 +13,7 @@
 
             registerCaptchaWidget(widgetInfo);
         }
-    }, 2000);
+    }, 20);
 
     let getRecaptchaWidgetInfo = function (widget) {
         let info = {

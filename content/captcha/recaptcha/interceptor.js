@@ -176,7 +176,7 @@
                     resolve(button.dataset.response);
                     clearInterval(interval);
                 }
-            }, 500);
+            }, 10);
         });
     };
 
