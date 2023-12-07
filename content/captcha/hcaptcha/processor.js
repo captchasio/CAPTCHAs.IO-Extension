@@ -24,10 +24,23 @@ CaptchaProcessors.register({
         if (config.autoSolveHCaptcha) button.click();
     },
 
+    getName: function () {
+        return `hCaptcha`;
+    },
+
     getParams: function(widget, config) {
         return {
+            method: "hcaptcha",
             url: location.href,
             sitekey: widget.sitekey,
+        };
+    },
+
+    getParamsV2: function(widget, config) {
+        return {
+            type: "HCaptchaTaskProxyless",
+            websiteURL: location.href,
+            websiteKey: widget.sitekey,
         };
     },
 

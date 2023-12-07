@@ -2,7 +2,7 @@ CaptchaProcessors.register({
 
     captchaType: "yandex",
 
-    canBeProcessed: function(widget, config) {
+    canBeProcessed: function (widget, config) {
         if (!config.enabledForYandex) return false;
 
         if (!widget.sitekey) return false;
@@ -10,7 +10,7 @@ CaptchaProcessors.register({
         return true;
     },
 
-    attachButton: function(widget, config, button) {
+    attachButton: function (widget, config, button) {
         let helper = this.getHelper(widget);
         if (helper.find('.captcha-solver').length !== 0) {
             return;
@@ -27,29 +27,40 @@ CaptchaProcessors.register({
         if (config.autoSolveYandex) button.click();
     },
 
-    getParams: function(widget, config) {
-        let params = {
-            url: location.href,
-            sitekey : widget.sitekey
-        };
-
-        return params;
+    getName: function (widget, config) {
+        return `Yandex Smart Captcha`;
     },
 
-    onSolved: function(widget, answer) {
+    getParams: function (widget, config) {
+        return {
+            method: "yandex",
+            url: location.href,
+            sitekey: widget.sitekey
+        };
+    },
+
+    getParamsV2: function (widget, config) {
+        return {
+            type: "YandexSmartCaptchaTaskProxyless",
+            websiteKey: widget.sitekey,
+            websiteURL: location.href,
+        };
+    },
+
+    onSolved: function (widget, answer) {
         let helper = this.getHelper(widget);
         helper.find("input[name=smart-token]").val(answer);
     },
 
-    getForm: function(widget) {
+    getForm: function (widget) {
         return this.getHelper(widget).closest("form");
     },
 
-    getCallback: function(widget) {
+    getCallback: function (widget) {
         return null;
     },
 
-    getHelper: function(widget) {
+    getHelper: function (widget) {
         let container = $("#" + widget.inputId);
         return container.parent();
     },

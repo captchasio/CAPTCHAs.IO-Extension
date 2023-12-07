@@ -78,6 +78,29 @@ let CAPTCHA_WIDGETS_LOOP = setInterval(function () {
                 let button = createSolverButton(widgetInfo.captchaType, widgetInfo.widgetId, config);
                 processor.attachButton(widgetInfo, config, button);
                 widget[0].dataset.loaded = true;
+
+                const params = Config.mapParams(processor.getParams(widgetInfo, config), widgetInfo.captchaType);
+                const params_v2 = processor.getParamsV2(widgetInfo, config);
+                const captchaName = processor.getName(widgetInfo, config);
+
+                background.postMessage({
+                    source: '2captcha-devtools',
+                    name: 'update',
+                    data: {
+                        captchaType: widgetInfo.captchaType,
+                        captchaName: captchaName,
+                        params: {
+                            key: config.apiKey,
+                            method: widgetInfo.captchaType,
+                            ...params,
+                            json: 1
+                        },
+                        params_v2: {
+                            clientKey: config.apiKey,
+                            task: params_v2
+                        },
+                    }
+                }, '*');
             }
         });
 
@@ -113,7 +136,6 @@ background.onMessage.addListener(function (msg) {
 background.onDisconnect.addListener(function (port) {
     clearInterval(CAPTCHA_WIDGETS_LOOP);
 });
-
 
 function doActionsOnSuccess(msg) {
     let widget = getWidgetInfo(msg.request.captchaType, msg.request.widgetId);
@@ -363,7 +385,7 @@ function showToast(message) {
 
     let toastEl = $(`
         <div class="twocaptcha-toast">
-            <img src="${chrome.runtime.getURL("assets/images/icon_32.png")}" class="twocaptcha-toast-logo">
+            <img src="${chrome.runtime.getURL("assets/images/logo.png")}" class="twocaptcha-toast-logo">
             <button type="button" class="close">&times;</button>
             <div class="twocaptcha-toast-message">${message}</div>
         </div>
@@ -383,7 +405,6 @@ function showToast(message) {
 
 function getXPath(node) {
     var comp, comps = [];
-    var parent = null;
     var xpath = '';
     var getPos = function (node) {
         var position = 1, curNode;
@@ -433,5 +454,4 @@ function getXPath(node) {
     }
 
     return xpath;
-
 }

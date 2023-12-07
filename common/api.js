@@ -20,73 +20,50 @@ class TwoCaptcha {
     }
 
     normal(captcha) {
-        captcha.method = "base64";
-
         return this.solve(captcha, { timeout: this.defaultTimeout });
     }
 
     recaptcha(captcha) {
-        captcha.method = "userrecaptcha";
-
         return this.solve(captcha, { timeout: this.recaptchaTimeout });
     }
 
     geetest(captcha) {
-        captcha.method = 'geetest';
-
         return this.solve(captcha);
     }
 
     geetest_v4(captcha) {
-        captcha.method = 'geetest_v4';
-
         return this.solve(captcha);
     }
 
     hcaptcha(captcha) {
-        captcha.method = 'hcaptcha';
-
         return this.solve(captcha);
     }
 
     keycaptcha(captcha) {
-        captcha.method = "keycaptcha";
-
         return this.solve(captcha);
     }
 
     arkoselabs(captcha) {
-        captcha.method = "funcaptcha";
-
         return this.solve(captcha);
     }
 
     lemin(captcha) {
-        captcha.method = "lemin";
-
         return this.solve(captcha);
     }
 
     yandex(captcha) {
-        captcha.method = "yandex";
-
         return this.solve(captcha);
     }
 
     capy(captcha) {
-        captcha.method = "capy";
-
         return this.solve(captcha);
     }
 
     amazon_waf(captcha) {
-        captcha.method = "amazon_waf";
         return this.solve(captcha);
     }
 
     turnstile(captcha) {
-        captcha.method = "turnstile";
-
         return this.solve(captcha);
     }
 
@@ -105,8 +82,8 @@ class TwoCaptcha {
 
         let files = this.extractFiles(captcha);
 
-        this.mapParams(captcha, captcha.method);
-        this.mapParams(files, captcha.method);
+        Config.mapParams(captcha, captcha.method);
+        Config.mapParams(files, captcha.method);
 
         return await this.in(captcha, files);
     }
@@ -153,7 +130,7 @@ class TwoCaptcha {
                 id: id,
             });
         } catch (e) {
-            if (e.message == "CAPCHA_NOT_READY") {
+            if (e.message === "CAPCHA_NOT_READY") {
                 return null;
             }
 
@@ -202,71 +179,9 @@ class TwoCaptcha {
         return files;
     }
 
-    mapParams(params, method) {
-        let map = this.getParamsMap(method);
 
-        for (let k in map) {
-            let newName = k;
-            let oldName = map[k];
-
-            if (params[newName] !== undefined) {
-                params[oldName] = params[newName];
-                delete params[newName];
-            }
-        }
-
-        if (params.proxy !== undefined) {
-            params.proxytype = params.proxy.type;
-            params.proxy = params.proxy.uri;
-        }
-    }
-
-    getParamsMap(method) {
-        let commonMap = {
-            base64: "body",
-            caseSensitive: "regsense",
-            minLen: "min_len",
-            maxLen: "max_len",
-            hintText: "textinstructions",
-            hintImg: "imginstructions",
-            url: "pageurl",
-            score: "min_score",
-            text: "textcaptcha",
-            rows: "recaptcharows",
-            cols: "recaptchacols",
-            previousId: "previousID",
-            canSkip: "can_no_answer",
-            apiServer: "api_server",
-            softId: "soft_id",
-            captchaId: "captcha_id",
-            divId: "div_id",
-            callback: "pingback",
-        };
-
-        let methodMap = {
-            userrecaptcha: {
-                sitekey: "googlekey",
-            },
-            funcaptcha: {
-                sitekey: "publickey",
-            },
-            capy: {
-                sitekey: "captchakey",
-            },
-        };
-
-        if (methodMap[method] !== undefined) {
-            for (let key in methodMap[method]) {
-                commonMap[key] = methodMap[method][key];
-            }
-        }
-
-        return commonMap;
-    }
 
     async in(captcha, files) {
-        // TODO: prepare files
-
         return await this.request('POST', '/in.php', captcha, files);
     }
 

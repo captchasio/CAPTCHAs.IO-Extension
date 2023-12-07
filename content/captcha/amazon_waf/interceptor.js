@@ -37,7 +37,9 @@
                                     target.id = "captcha-container";
                                 }
 
-                                initHelper(target.id, argumentsList[2]);
+                                setTimeout(() => {
+                                    initHelper(target.id, window.gokuProps || argumentsList[2]);
+                                }, 100);
                             }
                             return obj;
                         }

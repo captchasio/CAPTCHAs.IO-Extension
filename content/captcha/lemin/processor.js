@@ -25,8 +25,13 @@ CaptchaProcessors.register({
         if (config.autoSolveLemin) button.click();
     },
 
+    getName: function (widget, config) {
+        return `Lemin CAPTCHA`;
+    },
+
     getParams: function (widget, config) {
         let params = {
+            method: "lemin",
             url: location.href,
             captchaId: widget.captchaId,
             divId: widget.divId
@@ -34,6 +39,21 @@ CaptchaProcessors.register({
 
         if (widget.apiServer) {
             params.apiServer = widget.apiServer;
+        }
+
+        return params;
+    },
+
+    getParamsV2: function (widget, config) {
+        let params = {
+            type: "LeminTaskProxyless",
+            websiteURL: location.href,
+            captchaId: widget.captchaId,
+            divId: widget.divId
+        };
+
+        if (widget.apiServer) {
+            params.leminApiServerSubdomain = widget.apiServer;
         }
 
         return params;

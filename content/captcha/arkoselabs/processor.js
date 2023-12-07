@@ -29,14 +29,37 @@ CaptchaProcessors.register({
         }
     },
 
+    getName: function (widget, config) {
+        return `FunCaptcha`;
+    },
+
     getParams: function(widget, config) {
         let params = {
+            method: "funcaptcha",
             pageurl: this.getOriginUrl(),
             publickey: widget.pkey,
         };
 
         if (widget.surl) {
             params.surl = widget.surl;
+        }
+
+        if (widget.data) {
+            params.data = JSON.parse(decodeURIComponent(widget.data));
+        }
+
+        return params;
+    },
+
+    getParamsV2: function(widget, config) {
+        let params = {
+            type: "FunCaptchaTaskProxyless",
+            websiteURL: this.getOriginUrl(),
+            websitePublicKey: widget.pkey,
+        };
+
+        if (widget.surl) {
+            params.funcaptchaApiJSSubdomain = widget.surl;
         }
 
         if (widget.data) {

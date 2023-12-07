@@ -20,12 +20,14 @@
 
     const interceptorFunc = function () {
         const initCaptcha = (arguments) => {
-            registerCaptchaWidget({
-                captchaType: "yandex",
-                widgetId: arguments.sitekey,
-                sitekey: arguments.sitekey,
-                inputId: input.id,
-            });
+            if (!isCaptchaWidgetRegistered("yandex", arguments.sitekey)) {
+                registerCaptchaWidget({
+                    captchaType: "yandex",
+                    widgetId: arguments.sitekey,
+                    sitekey: arguments.sitekey,
+                    inputId: input.id,
+                });
+            }
         }
 
         if (yandexFuncProxy) {

@@ -13,8 +13,20 @@ CaptchaProcessors.register({
         if (config.autoSolveNormal) button.click();
     },
 
+    getName: function (widget, config) {
+        return `Normal CAPTCHA (Image)`;
+    },
+
     getParams: function(widget, config) {
         return {
+            method: "base64",
+            body: widget.base64,
+        };
+    },
+
+    getParamsV2: function(widget, config) {
+        return {
+            type: "ImageToTextTask",
             body: widget.base64,
         };
     },

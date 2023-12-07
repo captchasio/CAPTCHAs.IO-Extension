@@ -25,18 +25,33 @@ CaptchaProcessors.register({
         if (config.autoSolveTurnstile) button.click();
     },
 
-    getParams: function(widget, config) {
-        let params = {
-            url: location.href,
-            sitekey : widget.sitekey,
-            pageurl : widget.pageurl,
-            data : widget.data,
-            pagedata : widget.pagedata,
-            action : widget.action,
-            userAgent : navigator.userAgent,
-        };
+    getName: function (widget, config) {
+        return `Cloudflare Turnstile`;
+    },
 
-        return params;
+    getParams: function(widget, config) {
+        return {
+            method: "turnstile",
+            url: location.href,
+            sitekey: widget.sitekey,
+            pageurl: widget.pageurl,
+            data: widget.data,
+            pagedata: widget.pagedata,
+            action: widget.action,
+            userAgent: navigator.userAgent,
+        };
+    },
+
+    getParamsV2: function(widget, config) {
+        return {
+            type: "TurnstileTaskProxyless",
+            websiteURL: location.href,
+            websiteKey: widget.sitekey,
+            data: widget.data,
+            pagedata: widget.pagedata,
+            action: widget.action,
+            userAgent: navigator.userAgent,
+        };
     },
 
     onSolved: function(widget, answer) {

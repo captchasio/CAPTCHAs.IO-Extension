@@ -13,7 +13,7 @@
 
             registerCaptchaWidget(widgetInfo);
         }
-    }, 20);
+    }, 2000);
 
     let getRecaptchaWidgetInfo = function (widget) {
         let info = {
@@ -109,12 +109,20 @@
                     if (k3 === "action") info.action = obj[k2][k3];
                     if (k3 === "s") info.s = obj[k2][k3];
                     if (k3 === "callback") info.callback = obj[k2][k3];
-                    if (k3 === "bind" && obj[k2][k3]) {
-                        if (typeof obj[k2][k3] === "string") {
-                            info.bindedButtonId = obj[k2][k3];
+                    if (k3 === "bind") {
+                        if (obj[k2][k3]) {
+                            if (typeof obj[k2][k3] === "string") {
+                                info.bindedButtonId = obj[k2][k3];
+                            } else {
+                                let button = obj[k2][k3];
+                                if (button.id === undefined) {
+                                    button.id = "recaptchaBindedElement" + widget.id;
+                                }
+                                info.bindedButtonId = button.id;
+                            }
                         } else {
-                            let button = obj[k2][k3];
-                            if (button.id === undefined) {
+                            let button = document.querySelector('form button');
+                            if (!button.id) {
                                 button.id = "recaptchaBindedElement" + widget.id;
                             }
                             info.bindedButtonId = button.id;

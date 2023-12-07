@@ -27,14 +27,25 @@ CaptchaProcessors.register({
         if (config.autoSolveCapyPuzzle) button.click();
     },
 
+    getName: function () {
+        return `Capy Puzzle`;
+    },
+
     getParams: function(widget, config) {
-        let params = {
+        return {
+            method: "capy",
             url: location.href,
-            captchakey : widget.captchakey,
+            captchakey: widget.captchakey,
             apiServer: widget.apiServer
         };
+    },
 
-        return params;
+    getParamsV2: function(widget, config) {
+        return {
+            type: "CapyTaskProxyless",
+            websiteURL: location.href,
+            websiteKey: widget.captchakey
+        };
     },
 
     onSolved: function(widget, answer) {

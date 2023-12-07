@@ -37,12 +37,14 @@
                 input.id = "yandex-input-" + sitekey;
             }
 
-            registerCaptchaWidget({
-                captchaType: "yandex",
-                widgetId: sitekey,
-                sitekey: sitekey,
-                inputId: input.id,
-            });
+            if (!isCaptchaWidgetRegistered("yandex", sitekey)) {
+                registerCaptchaWidget({
+                    captchaType: "yandex",
+                    widgetId: sitekey,
+                    sitekey: sitekey,
+                    inputId: input.id,
+                });
+            }
         }
     };
 })()

@@ -1,19 +1,16 @@
 (() => {
-
     setInterval(function () {
-        fixHeightIframe();
-
         let input = document.querySelector("input[name='fc-token']");
-
         if (!input) return;
 
-        if (!window.arkoselabs_callback_dse7f73ek) return;
+        fixHeightIframe();
 
         if (isCaptchaWidgetRegistered("arkoselabs", 0)) return;
 
-        let widgetInfo = getArkoselabsWidgetInfo(input);
-
-        registerCaptchaWidget(widgetInfo);
+        const widgetInfo = getArkoselabsWidgetInfo(input);
+        if (widgetInfo) {
+            registerCaptchaWidget(widgetInfo);
+        }
     }, 2000);
 
     let fixHeightIframe = function () {
@@ -35,21 +32,20 @@
             input.id = "arkoselab-input-0";
         }
 
-        let params = {};
-
+        let data = {};
         input.value.split('|').forEach(pair => {
             let p = pair.split('=');
-            params[p[0]] = unescape(p[1]);
+            if (p[1] !== undefined) {
+                data[p[0]] = unescape(p[1]);
+            }
         });
 
         return {
             captchaType: "arkoselabs",
             widgetId: 0,
-            pkey: params.pk,
-            surl: params.surl,
+            pkey: data.pk,
+            surl: data.surl,
             inputId: input.id,
-            callback: "arkoselabs_callback_dse7f73ek",
-            data: window["arkoselabs_data_dse7f73ek"] || null,
         };
     };
 

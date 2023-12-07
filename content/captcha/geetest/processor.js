@@ -29,8 +29,13 @@ CaptchaProcessors.register({
         if (config.autoSolveGeetest) button.click();
     },
 
+    getName: function () {
+        return `GeeTest`;
+    },
+
     getParams: function(widget, config) {
         let params = {
+            method: "geetest",
             url: location.href,
             gt: widget.gt,
             challenge: widget.challenge,
@@ -38,6 +43,22 @@ CaptchaProcessors.register({
 
         if (widget.apiServer) {
             params.apiServer = widget.apiServer;
+        }
+
+        return params;
+    },
+
+    getParamsV2: function(widget, config) {
+        let params = {
+            type: "GeeTestTaskProxyless",
+            websiteURL: location.href,
+            gt: widget.gt,
+            challenge: widget.challenge,
+            version: 3
+        };
+
+        if (widget.apiServer) {
+            params.geetestApiServerSubdomain = widget.apiServer;
         }
 
         return params;

@@ -27,15 +27,28 @@ CaptchaProcessors.register({
         if (config.autoSolveAmazonWaf) button.click();
     },
 
-    getParams: function(widget, config) {
-        let params = {
-            url: location.href,
-            sitekey : widget.sitekey,
-            context : widget.context,
-            iv : widget.iv,
-        };
+    getName: function (widget, config) {
+        return `Amazon WAF`;
+    },
 
-        return params;
+    getParams: function(widget, config) {
+        return {
+            method: "amazon_waf",
+            url: location.href,
+            sitekey: widget.sitekey,
+            context: widget.context,
+            iv: widget.iv,
+        };
+    },
+
+    getParamsV2: function(widget, config) {
+        return {
+            type: "AmazonTaskProxyless",
+            websiteURL: location.href,
+            websiteKey: widget.sitekey,
+            context: widget.context,
+            iv: widget.iv,
+        };
     },
 
     onSolved: function(widget, answer) {

@@ -18,7 +18,7 @@ Config.getAll().then(config => {
     if (config.apiKey) {
         initApiClient(config.apiKey);
         if (config.valute === "RUB") {
-            API.service = "api.captchas.io";
+            API.service = "rucaptcha.com";
         }
     }
 });
@@ -33,39 +33,66 @@ function initApiClient(apiKey) {
     });
 }
 
+var devtoolsConnections = {};
+
 /*
  * Manage message passing
  */
 chrome.runtime.onConnect.addListener(function(port) {
+    // Listen to messages sent from the DevTools page
+    port.onMessage.addListener(function (message) {
+        // Register initial connection
+        if (message.name === 'init') {
+            devtoolsConnections[message.tabId] = port;
+            port.onDisconnect.addListener(function() {
+                delete devtoolsConnections[message.tabId];
+            });
+            return;
+        }
 
-    //console.log(port.name + ' connected');
-    //console.log(port);
+        if (message.source === '2captcha-devtools') {
+            for (tabId in devtoolsConnections) {
+                devtoolsConnections[tabId].postMessage(message);
+            }
+        }
 
-    port.onMessage.addListener(function (msg) {
-        //console.log(port.name + ' send message: ', msg);
-
-        let messageHandler = port.name + '_' + msg.action;
-
+        let messageHandler = port.name + '_' + message.action;
         if (self[messageHandler] === undefined) return;
-
-        self[messageHandler](msg)
+        self[messageHandler](message)
             .then((response) => {
-                //console.log('response to [' + messageHandler + ']: ', response);
-                port.postMessage({action: msg.action, request: msg, response});
+                port.postMessage({action: message.action, request: message, response});
             })
             .catch(error => {
-                //console.log('return error to [' + messageHandler + ']: ', error.message);
-                port.postMessage({action: msg.action, request: msg, error: error.message});
+                port.postMessage({action: message.action, request: message, error: error.message});
             });
     });
-
 });
 
+chrome.runtime.onMessage.addListener(function(message, sender) {
+    if (sender && sender.tab) {
+        var tabId = sender.tab.id;
+        if (tabId in devtoolsConnections) {
+            devtoolsConnections[tabId].postMessage(message);
+        } else {
+            console.log("Tab not found in connection list.");
+        }
+    } else {
+        console.log("sender.tab not defined.");
+    }
+    return true;
+});
+
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
+    if (tabId in devtoolsConnections && changeInfo.status === 'complete') {
+        devtoolsConnections[tabId].postMessage({
+            name: 'reloaded'
+        });
+    }
+});
 
 /*
  * Message handlers
  */
-
 async function popup_login(msg) {
     initApiClient(msg.apiKey);
 
@@ -78,7 +105,7 @@ async function popup_login(msg) {
     info.valute = info.valute.toUpperCase();
 
     if (info.valute === "RUB") {
-        API.service = "api.captchas.io";
+        API.service = "rucaptcha.com";
     }
 
     Config.set({

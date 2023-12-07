@@ -26,6 +26,10 @@
             configurable: true,
             get: function () {
                 return async function (sitekey, options) {
+                    if (!sitekey) {
+                        return await originalExecuteFunc(sitekey, options);
+                    }
+
                     if (!options) {
                         if (!isInvisible()) {
                             return await originalExecuteFunc(sitekey, options);
@@ -140,6 +144,8 @@
     };
 
     let addWidgetInfo = function (sitekey, options, enterprise) {
+        if (!sitekey) return;
+
         let widgetId = parseInt(Date.now() / 1000);
 
         let badge = document.querySelector(".grecaptcha-badge");
@@ -176,7 +182,7 @@
                     resolve(button.dataset.response);
                     clearInterval(interval);
                 }
-            }, 10);
+            }, 500);
         });
     };
 

@@ -38,5 +38,5 @@ $("[data-lang-link]").each(function() {
         path = "/" + lang + (path === "/" ? "" : path);
     }
 
-    $(this).attr("href", "https://captchas.io/" + path);
+    $(this).attr("href", "https://captchas.io" + path);
 });

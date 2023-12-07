@@ -64,10 +64,32 @@ CaptchaProcessors.register({
         return widget.callback;
     },
 
+    getName: function (widget, config) {
+        const names = ['reCAPTCHA'];
+
+        if (widget.version === "v3") {
+            names.push('V3');
+        } else if (widget.version === "v2_invisible") {
+            names.push('V2 Invisible');
+        } else {
+            names.push('V2');
+        }
+
+        if (widget.enterprise) {
+            names.push('Enterprise');
+        }
+
+        return names.join(' ');
+    },
+
     getParams: function(widget, config) {
         let params = {
-            sitekey: widget.sitekey,
+            method: "userrecaptcha",
+            googlekey: widget.sitekey,
             url: location.href,
+            invisible: 0,
+            enterprise: 0,
+            version: 'v2',
         };
 
         if (widget.version === "v2_invisible") {
@@ -89,6 +111,41 @@ CaptchaProcessors.register({
 
         if (widget.enterprise) {
             params.enterprise = 1;
+        }
+
+        return params;
+    },
+
+    getParamsV2: function(widget, config) {
+        let params = {
+            type: "RecaptchaV2TaskProxyless",
+            websiteKey: widget.sitekey,
+            websiteURL: location.href
+        };
+
+        if (widget.enterprise) {
+            params.type = "RecaptchaV2EnterpriseTaskProxyless";
+        }
+
+        if (widget.version === "v2_invisible") {
+            params.isInvisible = true;
+        }
+
+        if (widget.version === "v3") {
+            params.type = "RecaptchaV3TaskProxyless";
+            params.minScore = config.recaptchaV3MinScore;
+
+            if (widget.enterprise) {
+                params.isEnterprise = true;
+            }
+        }
+
+        if (widget.action) {
+            params.pageAction = widget.action;
+        }
+
+        if (widget.s) {
+            params.recaptchaDataSValue = widget.s;
         }
 
         return params;

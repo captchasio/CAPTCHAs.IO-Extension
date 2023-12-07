@@ -18,9 +18,25 @@ CaptchaProcessors.register({
         if (config.autoSolveKeycaptcha) button.click();
     },
 
+    getName: function (widget, config) {
+      return `KeyCaptcha`;
+    },
+
     getParams: function(widget, config) {
         return {
+            method: "keycaptcha",
             url: location.href,
+            s_s_c_user_id: widget.userId,
+            s_s_c_session_id: widget.sessionId,
+            s_s_c_web_server_sign: widget.webServerSign,
+            s_s_c_web_server_sign2: widget.webServerSign2,
+        };
+    },
+
+    getParamsV2: function(widget, config) {
+        return {
+            type: "KeyCaptchaTaskProxyless",
+            websiteURL: location.href,
             s_s_c_user_id: widget.userId,
             s_s_c_session_id: widget.sessionId,
             s_s_c_web_server_sign: widget.webServerSign,

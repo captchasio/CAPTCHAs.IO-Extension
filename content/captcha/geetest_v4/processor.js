@@ -25,11 +25,33 @@ CaptchaProcessors.register({
         if (config.autoSolveGeetest_v4) button.click();
     },
 
+    getName: function () {
+        return `GeeTest V4`;
+    },
+
     getParams: function(widget, config) {
         return {
+            method: "geetest_v4",
             url: location.href,
             captchaId: widget.captchaId
         };
+    },
+
+    getParamsV2: function(widget, config) {
+        let params = {
+            type: "GeeTestTaskProxyless",
+            websiteURL: location.href,
+            initParameters: {
+                captcha_id: widget.captchaId
+            },
+            version: 4
+        };
+
+        if (widget.apiServer) {
+            params.geetestApiServerSubdomain = widget.apiServer;
+        }
+
+        return params;
     },
 
     onSolved: function(widget, answer) {

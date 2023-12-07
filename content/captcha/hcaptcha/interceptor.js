@@ -53,7 +53,7 @@
                 clearInterval(intId);
                 registerCaptchaWidget(widgetInfo);
             }
-        }, 10)
+        }, 500)
     }
 
 })()
